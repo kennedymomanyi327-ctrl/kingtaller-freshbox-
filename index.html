@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>King Taller Fresh Box</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--orange:#ff8a1f;--lemon:#ffd21f;--melon:#ff4d5e;--berry:#ff7eb6;--lime:#5cc93e;--passion:#8e5bd6;--blue:#3a86ff;--ink:#241a2e;--bg:#fffdf6}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Fredoka',system-ui,sans-serif;background:var(--bg);color:var(--ink);padding-bottom:90px}
+header{background:linear-gradient(100deg,var(--orange),var(--melon) 45%,var(--passion));color:#fff;padding:22px 16px 18px}
+header h1{font-size:28px;font-weight:600}
+header p{opacity:.95;margin-top:4px}
+nav{display:flex;gap:8px;overflow-x:auto;padding:12px 16px;position:sticky;top:0;background:var(--bg);z-index:5}
+nav button{border:2px solid var(--ink);background:#fff;border-radius:99px;padding:8px 16px;font:inherit;white-space:nowrap;cursor:pointer}
+nav button.on{background:var(--ink);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;padding:0 16px}
+.card{border-radius:18px;padding:14px;color:#fff;display:flex;flex-direction:column;gap:6px}
+.card .em{font-size:40px}
+.card h3{font-size:18px;font-weight:500}
+.card select,.card button{font:inherit;border:0;border-radius:10px;padding:8px}
+.card select{background:rgba(255,255,255,.92);color:var(--ink)}
+.card button{background:#fff;color:var(--ink);font-weight:600;cursor:pointer}
+.bar{position:fixed;left:12px;right:12px;bottom:12px;background:var(--ink);color:#fff;border:0;border-radius:16px;padding:16px;font:600 17px 'Fredoka',sans-serif;display:flex;justify-content:space-between;cursor:pointer}
+.sheet{position:fixed;inset:0;background:rgba(36,26,46,.55);display:none;z-index:10;align-items:flex-end}
+.sheet.open{display:flex}
+.panel{background:#fff;width:100%;max-height:92vh;overflow:auto;border-radius:22px 22px 0 0;padding:18px}
+.panel h2{margin-bottom:10px}
+.row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee;gap:8px}
+.qty button{width:30px;height:30px;border-radius:50%;border:2px solid var(--ink);background:#fff;font-size:18px;cursor:pointer}
+.qty span{display:inline-block;min-width:24px;text-align:center}
+label{display:block;margin:10px 0 4px;font-weight:500}
+input,select.f{width:100%;padding:11px;border:2px solid #ddd;border-radius:12px;font:inherit}
+.pay{display:flex;gap:8px}.pay label{flex:1;border:2px solid #ddd;border-radius:12px;padding:10px;margin:0;cursor:pointer}
+.pay input{width:auto;margin-right:6px}
+.tot{font-size:20px;font-weight:600;display:flex;justify-content:space-between;margin:14px 0}
+.go{width:100%;background:var(--lime);color:#fff;border:0;border-radius:14px;padding:14px;font:600 18px 'Fredoka',sans-serif;cursor:pointer}
+.x{float:right;border:0;background:none;font-size:26px;cursor:pointer}
+.note{background:#fff6d6;border-radius:12px;padding:12px;margin:10px 0}
+.steps{display:flex;gap:6px;margin:14px 0}
+.steps div{flex:1;text-align:center;font-size:12px;padding:8px 2px;border-radius:10px;background:#eee}
+.steps div.done{background:var(--lime);color:#fff}
+</style>
+</head>
+<body>
+<header><h1>King Taller Fresh Box</h1><p>Coffee, fresh juice and fruit, delivered to you.</p></header>
+<nav id="tabs"></nav>
+<main class="grid" id="menu"></main>
+<button class="bar" id="bar" onclick="openSheet()"><span id="cnt">0 items</span><span id="sub">View order · KES 0</span></button>
+
+<div class="sheet" id="sheet"><div class="panel" id="panel"></div></div>
+
+<script>
+// ====== SETTINGS: edit these ======
+const SHOP_NAME = "King Taller Fresh Box";
+const PAY_NUMBER = "+254729911893";       // M-Pesa number shown at checkout
+const WHATSAPP = "254729911893";          // orders are sent to this WhatsApp number (no +)
+const FREE_OVER = 1500, FEE_NEAR = 100, FEE_FAR = 200;
+
+// ====== MENU: edit items and prices (KES) ======
+const COLORS = ["#ff8a1f","#ff4d5e","#8e5bd6","#3a86ff","#5cc93e","#ff7eb6","#e6a800"];
+const MENU = {
+  Coffee: [
+    ["☕","Espresso",[["Single",150]]],["☕","Americano",[["Regular",200]]],
+    ["☕","Cappuccino",[["Regular",250]]],["☕","Latte",[["Regular",280]]],
+    ["🧊","Iced Coffee",[["Regular",300]]],["🍵","Kenyan Tea (Chai)",[["Cup",100]]]],
+  Juices: [
+    ["🍊","Orange",[["Small",150],["Large",250]]],["🥭","Mango",[["Small",180],["Large",280]]],
+    ["🍈","Passion",[["Small",180],["Large",280]]],["🍉","Watermelon",[["Small",150],["Large",250]]],
+    ["🍍","Pineapple",[["Small",150],["Large",250]]],["🍹","Mixed Fruit",[["Small",200],["Large",300]]]],
+  Smoothies: [
+    ["🍓","Strawberry Banana",[["Small",250],["Large",350]]],
+    ["🥭","Mango Passion",[["Small",250],["Large",350]]],
+    ["🥬","Green Detox",[["Small",280],["Large",380]]]],
+  Fruits: [
+    ["🥗","Fruit Salad Cup",[["Cup",200]]],["📦","Fruit Box (family)",[["Box",800]]],
+    ["🍉","Watermelon Slices",[["Plate",100]]],["🍍","Pineapple Slices",[["Plate",100]]],
+    ["🍌","Bananas (bunch)",[["Bunch",150]]],["🍎","Apples (per kg)",[["1 kg",300]]]]
+};
+
+let cat = "Coffee", cart = [];
+const $ = id => document.getElementById(id);
+const kes = n => "KES " + n.toLocaleString();
+
+function drawTabs(){
+  $("tabs").innerHTML = Object.keys(MENU).map(c =>
+    `<button class="${c===cat?'on':''}" onclick="cat='${c}';drawTabs();drawMenu()">${c}</button>`).join("");
+}
+function drawMenu(){
+  $("menu").innerHTML = MENU[cat].map((it,i) => `
+    <div class="card" style="background:${COLORS[i%COLORS.length]}">
+      <div class="em">${it[0]}</div><h3>${it[1]}</h3>
+      <select id="s${i}">${it[2].map((s,j)=>`<option value="${j}">${s[0]} · ${s[1]}</option>`).join("")}</select>
+      <button onclick="add(${i})">Add</button>
+    </div>`).join("");
+}
+function add(i){
+  const it = MENU[cat][i], s = it[2][$("s"+i).value], name = it[1]+" ("+s[0]+")";
+  const f = cart.find(c => c.name===name);
+  f ? f.q++ : cart.push({name, price:s[1], q:1});
+  refresh();
+}
+function subtotal(){ return cart.reduce((a,c)=>a+c.price*c.q,0); }
+function refresh(){
+  const n = cart.reduce((a,c)=>a+c.q,0);
+  $("cnt").textContent = n + (n===1?" item":" items");
+  $("sub").textContent = "View order · " + kes(subtotal());
+  if($("sheet").classList.contains("open") && $("cartList")) drawCart();
+}
+function openSheet(){
+  $("sheet").classList.add("open");
+  $("panel").innerHTML = `<button class="x" onclick="closeSheet()">×</button><h2>Your order</h2>
+  <div id="cartList"></div>
+  <label>Your name</label><input id="nm">
+  <label>Phone number</label><input id="ph" type="tel" placeholder="07xx xxx xxx">
+  <label>Delivery address</label><input id="ad" placeholder="Estate, street, landmark">
+  <label>Distance</label>
+  <select class="f" id="di" onchange="drawCart()"><option value="near">Within 3 km</option><option value="far">Beyond 3 km</option></select>
+  <label>Delivery time</label><input id="tm" placeholder="ASAP or e.g. 4:30 pm">
+  <label>Payment</label>
+  <div class="pay"><label><input type="radio" name="pm" value="M-Pesa" checked>M-Pesa</label>
+  <label><input type="radio" name="pm" value="Cash on delivery">Cash</label></div>
+  <div class="tot"><span>Total</span><span id="tt"></span></div>
+  <div id="fee" style="color:#777"></div>
+  <button class="go" onclick="place()">Place order</button>`;
+  drawCart();
+}
+function closeSheet(){ $("sheet").classList.remove("open"); }
+function fee(){ if(subtotal()>=FREE_OVER||!cart.length) return 0; return $("di") && $("di").value==="far" ? FEE_FAR : FEE_NEAR; }
+function drawCart(){
+  $("cartList").innerHTML = cart.length ? cart.map((c,i)=>`
+    <div class="row"><div>${c.name}<br><small>${kes(c.price*c.q)}</small></div>
+    <div class="qty"><button onclick="chg(${i},-1)">−</button><span>${c.q}</span><button onclick="chg(${i},1)">+</button></div></div>`).join("")
+    : "<p>Your order is empty. Add something fresh.</p>";
+  $("tt").textContent = kes(subtotal()+fee());
+  $("fee").textContent = "Delivery: " + (fee()? kes(fee()) : "Free");
+}
+function chg(i,d){ cart[i].q+=d; if(cart[i].q<1) cart.splice(i,1); refresh(); drawCart(); }
+function place(){
+  if(!cart.length) return alert("Add at least one item.");
+  const nm=$("nm").value.trim(), ph=$("ph").value.trim(), ad=$("ad").value.trim();
+  if(!nm||!ph||!ad) return alert("Please enter your name, phone number and address.");
+  const pm = document.querySelector('input[name=pm]:checked').value, total = subtotal()+fee();
+  const id = "KT" + Math.floor(1000+Math.random()*9000);
+  const msg = `New order ${id} - ${SHOP_NAME}\n` + cart.map(c=>`${c.q} x ${c.name} = ${c.price*c.q}`).join("\n") +
+    `\nDelivery: ${fee()}\nTOTAL: ${total} KES\nPayment: ${pm}\nName: ${nm}\nPhone: ${ph}\nAddress: ${ad}\nTime: ${$("tm").value||"ASAP"}`;
+  window.open("https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent(msg),"_blank");
+  const payNote = pm==="M-Pesa"
+    ? `<div class="note">Pay <b>${kes(total)}</b> by M-Pesa to <b>${PAY_NUMBER}</b>. Use <b>${id}</b> as the reference, then send the M-Pesa confirmation message on WhatsApp.</div>`
+    : `<div class="note">Pay <b>${kes(total)}</b> in cash when your order arrives.</div>`;
+  $("panel").innerHTML = `<button class="x" onclick="closeSheet()">×</button><h2>Order ${id} received</h2>${payNote}
+  <div class="steps" id="st"><div>Received</div><div>Preparing</div><div>On the way</div><div>Delivered</div></div>
+  <p>We will confirm on WhatsApp. Thank you, ${nm}!</p>
+  <button class="go" style="margin-top:14px" onclick="closeSheet()">Back to menu</button>`;
+  cart = []; refresh();
+  // Demo tracker: connect to a real backend to update these live.
+  [0,1,2,3].forEach(i=>setTimeout(()=>{const s=$("st");if(s)s.children[i].classList.add("done")},i*4000));
+}
+drawTabs(); drawMenu(); refresh();
+</script>
+</body>
+</html>
