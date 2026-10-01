@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>King Taller Fresh Box</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+:root{--o:#ff8a1f;--r:#ff4d5e;--p:#8e5bd6;--g:#25d366;--ink:#241a2e;--bg:#fffdf6;--card:#fff}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{font-family:'Fredoka',system-ui,sans-serif;background:var(--bg);color:var(--ink);padding-bottom:150px}
+header{background:linear-gradient(100deg,var(--o),var(--r) 50%,var(--p));color:#fff;padding:18px 16px 22px;border-radius:0 0 24px 24px}
+header h1{font-size:25px;font-weight:600}header p{opacity:.95;font-size:14px;margin:2px 0 12px}
+.search{width:100%;border:0;border-radius:14px;padding:12px 14px;font:inherit;background:#fff}
+h2.t{font-size:19px;font-weight:600;margin:20px 16px 10px}
+.hs{display:flex;gap:10px;overflow-x:auto;padding:0 16px 4px}
+.ban{min-width:250px;border-radius:16px;padding:16px;color:#fff;font-weight:500}
+.ban b{display:block;font-size:18px}
+.cats button{border:0;background:none;font:inherit;text-align:center;min-width:72px;cursor:pointer}
+.cats .ci{width:62px;height:62px;border-radius:50%;background:#fff;border:3px solid #eee;display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 4px}
+.cats .on .ci{border-color:var(--r);background:#fff1f2}
+.ph{position:relative;overflow:hidden;background:var(--c);display:flex;align-items:center;justify-content:center}
+.ph span{font-size:44px}.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.fc{min-width:150px;background:var(--card);border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.08);overflow:hidden}
+.fc .ph{height:110px}.fc div.b{padding:8px 10px}
+.fc h3,.row h3{font-size:16px;font-weight:500}
+.pr{font-weight:600;margin-top:2px}
+.add{border:0;background:#fff1f2;color:var(--r);font:600 14px 'Fredoka',sans-serif;border-radius:10px;padding:7px 12px;cursor:pointer}
+.list{padding:0 16px;display:grid;gap:10px}
+.row{display:flex;gap:12px;background:var(--card);border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.08);padding:10px;align-items:center}
+.row .ph{width:84px;height:84px;border-radius:14px;flex:none}.row .ph span{font-size:38px}
+.row .m{flex:1;min-width:0}.row small{color:#777;display:block;font-size:12px;margin:2px 0 6px}
+.row .a{display:flex;justify-content:space-between;align-items:center;gap:6px}
+.row select{border:1px solid #ddd;border-radius:8px;padding:5px;font:inherit;font-size:13px;max-width:120px}
+.none{text-align:center;color:#777;padding:20px}
+nav.bot{position:fixed;left:0;right:0;bottom:0;background:#fff;box-shadow:0 -2px 14px rgba(0,0,0,.12);display:flex;justify-content:space-around;padding:8px 0 10px;z-index:8}
+nav.bot a{text-decoration:none;color:var(--ink);font-size:12px;text-align:center;flex:1}
+nav.bot a i{display:block;font-style:normal;font-size:21px}
+.sp{flex:1}
+.fab{position:fixed;left:50%;bottom:34px;transform:translateX(-50%);width:62px;height:62px;border-radius:50%;background:var(--r);color:#fff;border:4px solid #fff;font-size:26px;z-index:9;cursor:pointer;box-shadow:0 4px 14px rgba(255,77,94,.5)}
+.fab b{position:absolute;top:-6px;right:-6px;background:var(--ink);color:#fff;font:600 12px 'Fredoka',sans-serif;min-width:22px;height:22px;border-radius:11px;display:flex;align-items:center;justify-content:center}
+.wa{position:fixed;right:14px;bottom:84px;z-index:9;background:var(--g);color:#fff;text-decoration:none;border-radius:99px;padding:12px 16px;font-weight:600;box-shadow:0 4px 14px rgba(0,0,0,.3);display:flex;gap:6px;align-items:center}
+.sheet{position:fixed;inset:0;background:rgba(36,26,46,.55);display:none;z-index:20;align-items:flex-end}
+.sheet.open{display:flex}
+.panel{background:#fff;width:100%;max-height:94vh;overflow:auto;border-radius:22px 22px 0 0;padding:18px}
+.x{float:right;border:0;background:none;font-size:28px;cursor:pointer}
+.crow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee;gap:8px}
+.qty button{width:30px;height:30px;border-radius:50%;border:2px solid var(--ink);background:#fff;font-size:18px;cursor:pointer}
+.qty span{display:inline-block;min-width:24px;text-align:center}
+label{display:block;margin:12px 0 4px;font-weight:500}
+.in{width:100%;padding:11px;border:2px solid #ddd;border-radius:12px;font:inherit}
+#map{height:230px;border-radius:14px;margin-top:6px;z-index:1}
+.loc{background:var(--ink);color:#fff;border:0;border-radius:12px;padding:10px 14px;font:inherit;cursor:pointer;width:100%}
+.pay{display:flex;gap:8px}.pay label{flex:1;border:2px solid #ddd;border-radius:12px;padding:10px;margin:0;cursor:pointer}
+.tot{font-size:20px;font-weight:600;display:flex;justify-content:space-between;margin:14px 0 4px}
+.go{width:100%;background:var(--g);color:#fff;border:0;border-radius:14px;padding:14px;font:600 18px 'Fredoka',sans-serif;cursor:pointer;margin-top:10px}
+.note{background:#fff6d6;border-radius:12px;padding:12px;margin:10px 0}
+.steps{display:flex;gap:6px;margin:14px 0}
+.steps div{flex:1;text-align:center;font-size:12px;padding:8px 2px;border-radius:10px;background:#eee}
+.steps div.done{background:var(--g);color:#fff}
+
+:root{--fg:#2e9e4f;--cream:#fffaf0}
+body{background:var(--cream)}
+.hero{position:relative;min-height:540px;color:#fff;display:flex;flex-direction:column;overflow:hidden;border-radius:0 0 30px 30px}
+.hbg{position:absolute;inset:0;background:linear-gradient(135deg,#2e9e4f,#8bd450 40%,#ffb62e 75%,#ff7a2f)}
+.hbg .emo{position:absolute;inset:0;font-size:62px;opacity:.4;display:flex;flex-wrap:wrap;gap:20px;justify-content:center;align-content:center;padding:70px 10px 20px;animation:fl 6s ease-in-out infinite}
+.hbg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.5),rgba(0,0,0,.2) 45%,rgba(0,0,0,.6))}
+.top,.hc{position:relative;z-index:1}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 16px}
+.logo{font-weight:600;font-size:16px;line-height:1.1}.logo b{color:#ffd84a}
+.mn{display:flex;gap:12px;font-size:13px}.mn a{color:#fff;text-decoration:none}
+.cartic{position:relative;background:rgba(255,255,255,.22);border:0;border-radius:50%;width:40px;height:40px;font-size:19px;cursor:pointer;backdrop-filter:blur(6px)}
+.cartic b{position:absolute;top:-4px;right:-4px;background:#ff7a2f;color:#fff;border-radius:10px;min-width:18px;height:18px;font:600 11px 'Fredoka',sans-serif;display:flex;align-items:center;justify-content:center}
+.hc{margin:auto 0;padding:20px 18px 44px;text-align:center}
+.hc h1{font-size:40px;line-height:1.05;font-weight:600;text-shadow:0 2px 14px rgba(0,0,0,.45)}
+.hc p{margin:12px auto 22px;max-width:320px;font-size:16px}
+.btn1,.btn2{display:block;width:100%;max-width:340px;margin:10px auto 0;border-radius:99px;padding:15px;font:600 16px 'Fredoka',sans-serif;text-align:center;text-decoration:none;cursor:pointer;border:0}
+.btn1{background:var(--fg);color:#fff;box-shadow:0 6px 18px rgba(46,158,79,.55)}
+.btn2{background:rgba(255,255,255,.95);color:var(--ink)}
+.cc{min-width:124px;height:144px;border-radius:18px;border:0;padding:0;overflow:hidden;position:relative;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.12);font:inherit;color:#fff;transition:transform .2s}
+.cc:active{transform:scale(.96)}
+.cc .ph{position:absolute;inset:0}.cc .ph span{font-size:48px;margin-bottom:26px}
+.cc em{position:absolute;left:0;right:0;bottom:0;padding:18px 6px 8px;font-style:normal;font-weight:500;font-size:14px;background:linear-gradient(transparent,rgba(0,0,0,.7))}
+.fc{min-width:165px}.fc .add{background:var(--fg);color:#fff;width:100%;margin-top:8px;font-size:13px}
+.fc,.row,.cc{animation:up .5s both}
+.mh{display:flex;justify-content:space-between;align-items:center;padding-right:16px}
+.all{border:0;background:none;color:var(--fg);font:600 14px 'Fredoka',sans-serif;cursor:pointer}
+.search{display:block;width:calc(100% - 32px);margin:0 16px 12px;border:2px solid #eee;border-radius:14px;padding:12px 14px;font:inherit;background:#fff}
+.cartbar{position:fixed;left:14px;right:14px;bottom:14px;z-index:9;background:var(--ink);color:#fff;border:0;border-radius:18px;padding:14px 18px;font:600 16px 'Fredoka',sans-serif;display:flex;justify-content:space-between;align-items:center;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+.cartbar i{font-style:normal;color:#ffd84a}
+.cartbar.pop{animation:pop .35s}
+@keyframes pop{50%{transform:scale(1.04)}}
+@keyframes up{from{opacity:0;transform:translateY(14px)}}
+@keyframes fl{50%{transform:translateY(-10px)}}
+</style>
+</head>
+<body>
+<section class="hero" id="top">
+  <div class="hbg"><div class="emo">🍓🍊🍍🥭☕🍉🍋🍇🥤</div><img src="images/hero.jpg" alt="" onerror="this.remove()"></div>
+  <div class="hov"></div>
+  <div class="top">
+    <div class="logo">King Taller<br><b>Fresh Box</b></div>
+    <div class="mn"><a href="#cats">Shop</a><a href="#popular">Popular</a><a href="#menu">Menu</a></div>
+    <button class="cartic" onclick="openSheet()" aria-label="Cart">🛒<b id="cnt2">0</b></button>
+  </div>
+  <div class="hc">
+    <h1>Fresh. Cold.<br>Delivered.</h1>
+    <p>Fresh fruits, natural juices &amp; coffee delivered to your door.</p>
+    <a class="btn1" href="#menu">🛒 ORDER NOW</a>
+    <button class="btn2" onclick="openSheet(true)">📍 CHOOSE DELIVERY LOCATION</button>
+  </div>
+</section>
+
+<h2 class="t">Shop by Category</h2>
+<div class="hs" id="cats"></div>
+
+<h2 class="t" id="popular">🔥 Popular Today</h2>
+<div class="hs" id="feat"></div>
+
+<div class="mh" id="menu"><h2 class="t" id="mt">Our Menu</h2><button class="all" onclick="setCat('All')">Show all</button></div>
+<input class="search" id="q" placeholder="🔍 Search the menu..." oninput="Q=this.value;drawList()">
+<div class="list" id="list"></div>
+
+<a class="wa" id="wa" target="_blank" rel="noopener">💬 Order on WhatsApp</a>
+<button class="cartbar" onclick="openSheet()"><span id="cl">🛒 0 items</span><span id="tot2">KES 0</span><span><i>View cart ›</i></span></button>
+
+<div class="sheet" id="sheet"><div class="panel" id="panel"></div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+// ====== SETTINGS: edit these ======
+const SHOP_NAME = "King Taller Fresh Box";
+const PAY_NUMBER = "+254729911893";   // M-Pesa number shown at checkout
+const WHATSAPP = "254729911893";      // WhatsApp number for orders (no +)
+const SHOP = {lat:-1.2921, lng:36.8219}; // CHANGE to your shop's location (right-click it in Google Maps to copy)
+const API = "";                       // M-Pesa server address. Leave empty for manual payment.
+const FREE_OVER = 1500, FEE_NEAR = 100, FEE_FAR = 200, NEAR_KM = 3;
+
+// ====== MENU: [category, emoji, name, description, [[size, price]...], featured] ======
+// Photos: put a picture in the "images" folder named after the item, e.g. images/orange.jpg
+const COLORS = {Coffee:"#c98a5a","Fresh Juices":"#ff9f43","Fresh Fruits":"#5cc93e","Fruit Salads":"#ff7eb6","Fresh Boxes":"#8e5bd6"};
+const ITEMS = [
+ ["Coffee","☕","Espresso","Strong, rich single shot",[["Single",150]],1],
+ ["Coffee","☕","Americano","Smooth black coffee",[["Regular",200]]],
+ ["Coffee","☕","Cappuccino","Espresso with creamy foam",[["Regular",250]],1],
+ ["Coffee","☕","Latte","Espresso with steamed milk",[["Regular",280]]],
+ ["Coffee","🧊","Iced Coffee","Cold and refreshing",[["Regular",300]]],
+ ["Coffee","🍵","Kenyan Tea (Chai)","Hot milky tea",[["Cup",100]]],
+ ["Fresh Juices","🍊","Orange","Fresh squeezed",[["Small",150],["Large",250]],1],
+ ["Fresh Juices","🥭","Mango","Thick and sweet",[["Small",180],["Large",280]],1],
+ ["Fresh Juices","🍈","Passion","Tangy and fresh",[["Small",180],["Large",280]]],
+ ["Fresh Juices","🍉","Watermelon","Cool and juicy",[["Small",150],["Large",250]]],
+ ["Fresh Juices","🍍","Pineapple","Sweet tropical juice",[["Small",150],["Large",250]]],
+ ["Fresh Juices","🍹","Mixed Fruit","A blend of seasonal fruits",[["Small",200],["Large",300]]],
+ ["Fresh Juices","🍓","Strawberry Banana","Creamy fruit smoothie",[["Small",250],["Large",350]],1],
+ ["Fresh Juices","🥭","Mango Passion","Tropical blend",[["Small",250],["Large",350]]],
+ ["Fresh Juices","🥬","Green Detox","Kale, apple and lime",[["Small",280],["Large",380]]],
+ ["Fruit Salads","🥗","Fruit Salad Cup","Fresh mixed fruit",[["Cup",200]]],
+ ["Fresh Boxes","📦","Fruit Box (family)","Big box of fresh fruit",[["Box",800]],1],
+ ["Fresh Fruits","🍉","Watermelon Slices","Chilled slices",[["Plate",100]]],
+ ["Fresh Fruits","🍍","Pineapple Slices","Sweet and ripe",[["Plate",100]]],
+ ["Fresh Fruits","🍌","Bananas (bunch)","Ripe bananas",[["Bunch",150]]],
+ ["Fresh Fruits","🍎","Apples (per kg)","Crisp apples",[["1 kg",300]]]
+].map((a,i)=>({i,c:a[0],e:a[1],n:a[2],d:a[3],s:a[4],f:a[5]}));
+
+let cat="All", Q="", cart=[], map, pin, pinned=false, LL={lat:SHOP.lat,lng:SHOP.lng};
+const $=id=>document.getElementById(id), kes=n=>"KES "+n.toLocaleString();
+const slug=n=>n.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"");
+const ph=(it,cls)=>`<div class="ph ${cls||""}" style="--c:${COLORS[it.c]}"><span>${it.e}</span><img src="images/${slug(it.n)}.jpg" alt="${it.n}" loading="lazy" onerror="this.remove()"></div>`;
+
+$("wa").href="https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent("Hello "+SHOP_NAME+", I would like to order.");
+
+const CATS=[["Fresh Fruits","🍓"],["Fresh Juices","🧃"],["Coffee","☕"],["Fruit Salads","🥗"],["Fresh Boxes","📦"]];
+function drawCats(){
+  $("cats").innerHTML=CATS.map(c=>`<button class="cc" onclick="setCat('${c[0]}')"><div class="ph" style="--c:${COLORS[c[0]]}"><span>${c[1]}</span><img src="images/cat-${slug(c[0])}.jpg" alt="${c[0]}" loading="lazy" onerror="this.remove()"></div><em>${c[1]} ${c[0]}</em></button>`).join("");
+}
+function setCat(c){cat=c;$("mt").textContent=c==="All"?"Our Menu":c;drawList();$("menu").scrollIntoView();}
+function drawFeat(){
+  $("feat").innerHTML=ITEMS.filter(x=>x.f).map(it=>`<div class="fc">${ph(it)}<div class="b"><h3>${it.n}</h3>
+  <div class="pr">${kes(it.s[0][1])}</div><button class="add" onclick="add(${it.i},0)">ADD TO CART</button></div></div>`).join("");
+}
+function drawList(){
+  const l=ITEMS.filter(x=>(cat==="All"||x.c===cat)&&x.n.toLowerCase().includes(Q.toLowerCase()));
+  $("list").innerHTML=l.length?l.map(it=>`<div class="row">${ph(it)}<div class="m"><h3>${it.n}</h3><small>${it.d}</small>
+  <div class="a"><select id="s${it.i}">${it.s.map((s,j)=>`<option value="${j}">${s[0]} · ${s[1]}</option>`).join("")}</select>
+  <button class="add" onclick="add(${it.i})">+ Add</button></div></div></div>`).join(""):'<div class="none">Nothing found. Try another search.</div>';
+}
+function add(i,j){
+  const it=ITEMS[i], k=j!==undefined?j:+$("s"+i).value, s=it.s[k], name=it.n+" ("+s[0]+")";
+  const f=cart.find(c=>c.name===name); f?f.q++:cart.push({name,price:s[1],q:1}); refresh();
+}
+const subtotal=()=>cart.reduce((a,c)=>a+c.price*c.q,0);
+function km(){const R=6371,r=x=>x*Math.PI/180,a=Math.sin(r(LL.lat-SHOP.lat)/2)**2+Math.cos(r(SHOP.lat))*Math.cos(r(LL.lat))*Math.sin(r(LL.lng-SHOP.lng)/2)**2;return 2*R*Math.asin(Math.sqrt(a));}
+function fee(){return (!cart.length||subtotal()>=FREE_OVER)?0:(pinned&&km()>NEAR_KM?FEE_FAR:FEE_NEAR);}
+function refresh(){
+  const n=cart.reduce((a,c)=>a+c.q,0);
+  $("cl").textContent="🛒 "+n+(n===1?" item":" items");$("cnt2").textContent=n;$("tot2").textContent=kes(subtotal());
+  const b=document.querySelector(".cartbar");b.classList.remove("pop");void b.offsetWidth;b.classList.add("pop");
+  if($("cartList"))drawCart();
+}
+
+function openSheet(focusMap){
+  $("sheet").classList.add("open");
+  $("panel").innerHTML=`<button class="x" onclick="closeSheet()">×</button><h2>Your order</h2><div id="cartList"></div>
+  <label>Your name</label><input class="in" id="nm">
+  <label>Phone number</label><input class="in" id="ph" type="tel" placeholder="07xx xxx xxx">
+  <label>Delivery location</label>
+  <button class="loc" onclick="locate()">📍 Use my current location</button>
+  <div id="map"></div><small id="dist" style="color:#777">Tap the map or drag the pin to your exact spot.</small>
+  <label>House / landmark (optional)</label><input class="in" id="ad" placeholder="e.g. Blue gate, 2nd floor">
+  <label>Delivery time</label><input class="in" id="tm" placeholder="ASAP or e.g. 4:30 pm">
+  <label>Payment</label>
+  <div class="pay"><label><input type="radio" name="pm" value="M-Pesa" checked> M-Pesa</label><label><input type="radio" name="pm" value="Cash on delivery"> Cash</label></div>
+  <div class="tot"><span>Total</span><span id="tt"></span></div><div id="fee" style="color:#777"></div>
+  <button class="go" onclick="place()">Place order</button>`;
+  drawCart(); initMap();
+  if(focusMap)setTimeout(()=>$("map").scrollIntoView({block:"center"}),350);
+}
+function closeSheet(){$("sheet").classList.remove("open");}
+function drawCart(){
+  $("cartList").innerHTML=cart.length?cart.map((c,i)=>`<div class="crow"><div>${c.name}<br><small>${kes(c.price*c.q)}</small></div>
+  <div class="qty"><button onclick="chg(${i},-1)">−</button><span>${c.q}</span><button onclick="chg(${i},1)">+</button></div></div>`).join(""):"<p>Your cart is empty. Add something fresh.</p>";
+  $("tt").textContent=kes(subtotal()+fee());
+  $("fee").textContent="Delivery: "+(fee()?kes(fee()):"Free");
+}
+function chg(i,d){cart[i].q+=d;if(cart[i].q<1)cart.splice(i,1);refresh();}
+function initMap(){
+  if(map){map.remove();map=null;}
+  if(typeof L==="undefined"){$("map").innerHTML='<p class="none">Map could not load. Type your address below.</p>';return;}
+  map=L.map("map").setView([LL.lat,LL.lng],15);
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(map);
+  pin=L.marker([LL.lat,LL.lng],{draggable:true}).addTo(map);
+  pin.on("dragend",()=>setPos(pin.getLatLng().lat,pin.getLatLng().lng));
+  map.on("click",e=>{pin.setLatLng(e.latlng);setPos(e.latlng.lat,e.latlng.lng);});
+  setTimeout(()=>map.invalidateSize(),200);
+}
+function setPos(lat,lng){LL={lat,lng};pinned=true;$("dist").textContent="Pin set. About "+km().toFixed(1)+" km from the shop.";drawCart();}
+function locate(){
+  if(!navigator.geolocation)return alert("Location is not available on this phone. Tap the map instead.");
+  navigator.geolocation.getCurrentPosition(p=>{const a=p.coords.latitude,b=p.coords.longitude;if(map){pin.setLatLng([a,b]);map.setView([a,b],17);}setPos(a,b);},
+  ()=>alert("Could not get your location. Allow location access, or tap the map."),{enableHighAccuracy:true,timeout:15000});
+}
+function place(){
+  if(!cart.length)return alert("Add at least one item.");
+  const nm=$("nm").value.trim(),phn=$("ph").value.trim(),ad=$("ad").value.trim();
+  if(!nm||!phn)return alert("Please enter your name and phone number.");
+  if(!pinned&&!ad)return alert("Please set your delivery location on the map, or type a landmark.");
+  const pm=document.querySelector('input[name=pm]:checked').value,total=subtotal()+fee(),id="KT"+Math.floor(1000+Math.random()*9000);
+  const maps=pinned?"https://www.google.com/maps?q="+LL.lat.toFixed(6)+","+LL.lng.toFixed(6):"Not pinned";
+  const msg=`New order ${id} - ${SHOP_NAME}\n`+cart.map(c=>`${c.q} x ${c.name} = ${c.price*c.q}`).join("\n")+
+    `\nDelivery: ${fee()}\nTOTAL: ${total} KES\nPayment: ${pm}\nName: ${nm}\nPhone: ${phn}\nMap: ${maps}\nLandmark: ${ad||"-"}\nTime: ${$("tm").value||"ASAP"}`;
+  window.open("https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent(msg),"_blank");
+  const note=pm==="M-Pesa"&&API?`<div class="note" id="pn">A payment request for <b>${kes(total)}</b> was sent to <b>${phn}</b>. Enter your M-Pesa PIN on your phone.</div>`
+   :pm==="M-Pesa"?`<div class="note">Pay <b>${kes(total)}</b> by M-Pesa to <b>${PAY_NUMBER}</b>. Use <b>${id}</b> as the reference, then send the M-Pesa confirmation message on WhatsApp.</div>`
+   :`<div class="note">Pay <b>${kes(total)}</b> in cash when your order arrives.</div>`;
+  $("panel").innerHTML=`<button class="x" onclick="closeSheet()">×</button><h2>Order ${id} received</h2>${note}
+  <div class="steps" id="st"><div>Received</div><div>Preparing</div><div>On the way</div><div>Delivered</div></div>
+  <p>We will confirm on WhatsApp. Thank you, ${nm}!</p><button class="go" onclick="closeSheet()">Back to menu</button>`;
+  cart=[];refresh();
+  if(pm==="M-Pesa"&&API)payMpesa(id,phn,total);
+  [0,1,2,3].forEach(i=>setTimeout(()=>{const s=$("st");if(s)s.children[i].classList.add("done");},i*4000)); // demo tracker
+}
+async function payMpesa(id,phone,amount){
+  const say=t=>{const n=$("pn");if(n)n.innerHTML=t;};
+  try{const r=await fetch(API+"/api/pay",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({orderId:id,phone,amount})});if(!r.ok)throw 0;}
+  catch(e){return say(`Could not send the payment request. Pay <b>${kes(amount)}</b> manually to <b>${PAY_NUMBER}</b> with reference <b>${id}</b>.`);}
+  let n=0;const t=setInterval(async()=>{n++;
+    try{const s=await(await fetch(API+"/api/status/"+id)).json();
+      if(s.status==="paid"){clearInterval(t);say(`Payment received. M-Pesa receipt: <b>${s.receipt}</b>. Thank you!`);}
+      else if(s.status==="failed"){clearInterval(t);say(`Payment was not completed. Pay manually to <b>${PAY_NUMBER}</b> with reference <b>${id}</b>.`);}
+    }catch(e){}
+    if(n>30){clearInterval(t);say("We have not received your payment yet. If you paid, send the M-Pesa message on WhatsApp.");}
+  },3000);
+}
+drawCats();drawFeat();drawList();refresh();
+</script>
+</body>
+</html>
